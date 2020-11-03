@@ -5,9 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script>
-                function addCat() {
+            function addCat() {
             var obj = {};
             obj.name = document.getElementById("name").value;
+            // obj.birthday = document.getElementById("birthday").value;
+            // obj.arrivalDate = document.getElementById("arrivalDate").value;
+            // obj.gender = document.getElementById("gender").value;
+            // obj.desexed = document.getElementById("desexed").value;
+            // obj.vaccinesUpToDate = document.getElementById("vaccinesUpToDate").value;
+            // obj.healthNotes = document.getElementById("healthNotes").value;
+            // obj.cageNumber = document.getElementById("cageNumber").value;
+            // obj.aggressiveWarning = document.getElementById("aggressiveWarning").value;
             objJSON = JSON.stringify(obj);
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
@@ -15,12 +23,51 @@
             }
             xhr.open("POST", "http://localhost:8080/api/shelter/add/cat", true);
             xhr.setRequestHeader("Content-Type", "application/json");
-
             xhr.send(objJSON);
+        }
+
+        function alertBox() {
+             alert("I am an alert box!");
+        }
+
+
+        function getCats() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    var databaseContents = JSON.parse(this.responseText);
+                    var catString = "";
+                    var x;
+
+                    for (x = 0; x < databaseContents.length; x++) {
+                        catString +=
+                            `
+                    <div>
+                    <h3>name = ${databaseContents[x].name}</h3>
+                    <p>Id = ${databaseContents[x].id}</p>
+                    <p>birthday = ${databaseContents[x].birthday}</p>
+                    
+                    </div>
+                    `
+                    }
+                }
+                document.getElementById("gettingallthecats").innerHTML = catString;
+            }
+            xhr.open("GET", "http://localhost:8080/api/shelter/get/all/cats", true)
+            xhr.send();
         }
     </script>
 </head>
-<body>
-    
+<body onload=getCats()>
+
+
+    <h1>Welcome</h1>
+    <button onclick="alertBox()">Try it</button>
+    <p>Create a new cat here</p>
+    <input type=text id=name placeholder="Name">
+    <input type=button onclick=addCat() value=create>
+
+    <div id="gettingallthecats"></div>
+    <input type=button onclick=getCats() value="Get all cats">
 </body>
 </html>
